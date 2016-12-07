@@ -1,6 +1,6 @@
 {
   "name": "tconfig",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A simple transparent config file loader for Nodejs applications. any config field can be overriden using environmen variables",
   "main": "index.js",
   "scripts": {
