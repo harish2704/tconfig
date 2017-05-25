@@ -1,15 +1,39 @@
 
 var  path = require('path');
-var configDIR = process.env.CONFIG_DIR || path.resolve( path.join( require.main.paths[0], '..', 'config' ) );
+var fs = require('fs');
+var configDir;
 var env = ( process.env.NODE_ENV || 'development' ).toLowerCase();
 var envPrefix = process.env.TC_PREFIX || 'TC_';
 var envRegex = new RegExp( '^' + envPrefix + '(.*)' );
 var finalConfig = {};
+var configDirLookupPath = [
+  path.resolve( path.join( require.main.paths[0], '..', 'config' ) ),
+  path.join( process.env.PWD, 'config' )
+];
+if( process.env.CONFIG_DIR ){
+  configDirLookupPath.unshift( process.env.CONFIG_DIR );
+}
+
+for (var i = 0, l = configDirLookupPath.length; i < l; i ++) {
+  var v = configDirLookupPath[i];
+  if( fs.existsSync(v) ){
+    configDir = v;
+    break;
+  }
+}
+if( !configDir ){
+  throw Error(
+    'Config directory not found.\n Look up at following locations failed.\n---\n** ' +
+    configDirLookupPath.join('\n** ') + '\n---\n' +
+    '\n Please set CONFIG_DIR env variable');
+}
+
+
 
 function loadConfig( name ){
   var out = {};
   try{
-    out = require( configDIR + '/' + name );
+    out = require( configDir + '/' + name );
   } catch(e){
     out = {};
   }
