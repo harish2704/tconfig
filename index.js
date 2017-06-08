@@ -40,6 +40,25 @@ function loadConfig( name ){
   return out;
 }
 
+function assignDeep( src, dest1, dest2 ){
+  var key, val;
+  for( key in dest1 ){
+    val = dest1[ key ];
+    if( val.constructor.name === 'Object' ){
+      if( ( !src.hasOwnProperty(key) ) || ( src[ key ].constructor.name !== 'Object' ) ){
+        src[ key ] = {};
+      }
+      assignDeep( src[ key ], val );
+    } else {
+      src[ key ] = val;
+    }
+  }
+  if( dest2 ){
+    assignDeep( src, dest2 );
+  }
+  return src;
+}
+
 /* Implementation of lodash.set function */
 function setProp( object, keys, val ){
   keys = Array.isArray( keys )? keys : keys.split('.');
@@ -50,12 +69,12 @@ function setProp( object, keys, val ){
   object[keys[0]] = val;
 }
 
-Object.assign( finalConfig, loadConfig('default'), loadConfig( env ) );
+assignDeep( finalConfig, loadConfig('default'), loadConfig( env ) );
 
-var envList = Object.keys( process.env ).filter( function(v){
+Object.keys( process.env ).filter( function(v){
   var match = v.match( envRegex );
   if( match ){
-    setProp( finalConfig, match[1].toLowerCase(), process.env[v] );
+    setProp( finalConfig, match[1], process.env[v] );
   }
 });
 
