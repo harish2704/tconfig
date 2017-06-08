@@ -57,7 +57,7 @@ For eg:
 
 ```bash
 hari@hari-VirtualBox:~app$ env NODE_ENV=production TC_db.mysql.user=root node xyz.js 
-{ port: 5000, db: { mysql: { user: 'root' } } }
+{ port: 4000, db: { mysql: { user: 'root' } } }
 ```
 
 ##### Use custom env prefix.

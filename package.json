@@ -1,6 +1,6 @@
 {
   "name": "tconfig",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A simple transparent config file loader for Nodejs applications. any config field can be overriden using environmen variables",
   "main": "index.js",
   "scripts": {
@@ -22,6 +22,5 @@
   },
   "homepage": "https://github.com/harish2704/tconfig#readme",
   "dependencies": {
-    "lodash.defaultsdeep": "^4.6.0"
   }
 }
