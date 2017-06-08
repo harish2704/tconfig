@@ -1,2 +1,2 @@
 
-console.log( require('tconfig'));
+console.log( require('../../'));
