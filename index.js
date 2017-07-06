@@ -28,7 +28,15 @@ if( !configDir ){
     '\n Please set CONFIG_DIR env variable');
 }
 
-
+function processSpecial( str ){
+  var out;
+  try {
+    out = JSON.parse(str);
+  } catch (e) {
+    out = str;
+  }
+  return out;
+}
 
 function loadConfig( name ){
   var out = {};
@@ -74,7 +82,7 @@ assignDeep( finalConfig, loadConfig('default'), loadConfig( env ) );
 Object.keys( process.env ).filter( function(v){
   var match = v.match( envRegex );
   if( match ){
-    setProp( finalConfig, match[1], process.env[v] );
+    setProp( finalConfig, match[1], processSpecial( process.env[v] ) );
   }
 });
 
