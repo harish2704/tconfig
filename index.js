@@ -7,9 +7,12 @@ var envPrefix = process.env.TC_PREFIX || 'TC_';
 var envRegex = new RegExp( '^' + envPrefix + '(.*)' );
 var finalConfig = {};
 var configDirLookupPath = [
-  path.resolve( path.join( require.main.paths[0], '..', 'config' ) ),
   path.join( process.env.PWD, 'config' )
 ];
+
+if( require.main ){
+  configDirLookupPath.unshift( path.resolve( path.join( require.main.paths[0], '..', 'config' ) ) );
+}
 if( process.env.CONFIG_DIR ){
   configDirLookupPath.unshift( process.env.CONFIG_DIR );
 }
@@ -73,6 +76,9 @@ function setProp( object, keys, val ){
   if( keys.length>1 ){
     object[keys[0]] = object[keys[0]] || {};
     return setProp( object[keys[0]], keys.slice(1), val );
+  }
+  if( val instanceof Object ){
+    return assignDeep( object[keys[0]], val );
   }
   object[keys[0]] = val;
 }
