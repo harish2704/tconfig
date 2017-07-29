@@ -9,6 +9,8 @@ var finalConfig = {};
 var configDirLookupPath = [
   path.join( process.env.PWD, 'config' )
 ];
+var beVerbose = process.env.DEBUG && 'tconfig'.match( process.env.DEBUG.replace( /\*/g, '.*' ) );
+var log = beVerbose ? console.log.bind( console, 'tconfig:: ' ) : function(){};
 
 if( require.main ){
   configDirLookupPath.unshift( path.resolve( path.join( require.main.paths[0], '..', 'config' ) ) );
@@ -21,6 +23,7 @@ for (var i = 0, l = configDirLookupPath.length; i < l; i ++) {
   var v = configDirLookupPath[i];
   if( fs.existsSync(v) ){
     configDir = v;
+    log( 'Found config dir: ' + configDir );
     break;
   }
 }
@@ -42,10 +45,12 @@ function processSpecial( str ){
 }
 
 function loadConfig( name ){
+  log('Loading config ' + name );
   var out = {};
   try{
     out = require( configDir + '/' + name );
   } catch(e){
+    log( 'Error loading config ' + name, e );
     out = {};
   }
   return out;
@@ -92,5 +97,6 @@ Object.keys( process.env ).filter( function(v){
   }
 });
 
+log('Final config ', JSON.stringify(finalConfig, null, 2 ) );
 
 module.exports = finalConfig;

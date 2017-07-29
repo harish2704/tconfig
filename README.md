@@ -48,12 +48,19 @@ hari@hari-VirtualBox:~app$ env NODE_ENV=production node xyz.js
 
 #### Set any configuration variable using Environtment variable.
 By setting an Environtment variable '<Prefix><key>=<value>', we can set config[key] as value.
-Default prefix is `TC_`
+
+** First we will try to parse value as json. It it is failed value will be treated as string **
+
+** If a values if parsable as JSON object, then it will be deep merged with default configuration  **
+Default prefix is `TC_` ( Can be changed by setting  TC_PREFIX` env variable `)
 For eg:
 
   * `TC_port` will set config.port
-
   * `TC_a.b.c` will set config.a.b.c
+  * `TC_a='{"a":{"b":{"c": 123546 }}}'` will also set `config.a.b.c`
+  * `TC_port=8000` will set `{ port: 8000 }` By default, number will parsed as json number.
+  * `TC_port='"8000"'` will set `{ port: '8000' }` ( **now port is a string** because double quoted value will be parsed as string in json )
+
 
 ```bash
 hari@hari-VirtualBox:~app$ env NODE_ENV=production TC_db.mysql.user=root node xyz.js 
@@ -79,6 +86,19 @@ hari@hari-VirtualBox:~app$ env CONFIG_DIR=../config TC_PREFIX=MYAPP_ NODE_ENV=pr
 { dir: '../config', db: { mysql: { user: 'root' } } }
 
 ```
+
+#### printing debug messages
+set `DEBUG` environment variable to `tconfig`
+```bash
+export DEBUG=tconfig
+# OR
+export DEBUG='*'
+```
+
+#### Config directory search path
+  * Directory pointed by `CONFIG_DIR` environment variable
+  * < directory or main script >/config
+  * < current working directory >/config
 
 
 
